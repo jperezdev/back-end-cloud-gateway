@@ -6,10 +6,11 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springdoc.core.properties.AbstractSwaggerUiConfigProperties.SwaggerUrl;
-import org.springdoc.core.properties.SwaggerUiConfigProperties;
+import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
+import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,8 +29,19 @@ public class OpenApiGatewayConfig {
 
 	@Bean
 	public ApplicationListener<ApplicationReadyEvent> swaggerUiConfig(RouteDefinitionLocator locator,
-			SwaggerUiConfigProperties swaggerUiConfigProperties) {
-		return event -> locator.getRouteDefinitions()
+			SwaggerUiConfigParameters swaggerUiConfigParameters) {
+		return event -> refreshSwaggerUrls(locator, swaggerUiConfigParameters);
+	}
+
+	@Bean
+	public ApplicationListener<RefreshRoutesEvent> swaggerUiConfigOnRefresh(RouteDefinitionLocator locator,
+			SwaggerUiConfigParameters swaggerUiConfigParameters) {
+		return event -> refreshSwaggerUrls(locator, swaggerUiConfigParameters);
+	}
+
+	private void refreshSwaggerUrls(RouteDefinitionLocator locator,
+			SwaggerUiConfigParameters swaggerUiConfigParameters) {
+		locator.getRouteDefinitions()
 				.filter(definition -> definition.getUri() != null
 						&& "lb".equalsIgnoreCase(definition.getUri().getScheme()))
 				.map(definition -> definition.getUri().getHost())
@@ -43,7 +55,7 @@ public class OpenApiGatewayConfig {
 					for (String serviceId : serviceIds) {
 						urls.add(new SwaggerUrl(serviceId, "/" + serviceId + normalizeApiDocsPath(), serviceId));
 					}
-					swaggerUiConfigProperties.setUrls(urls);
+					swaggerUiConfigParameters.setUrls(urls);
 				});
 	}
 
