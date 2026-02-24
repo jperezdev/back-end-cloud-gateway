@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springdoc.core.properties.AbstractSwaggerUiConfigProperties.SwaggerUrl;
-import org.springdoc.core.properties.SwaggerUiConfigParameters;
+import org.springdoc.core.properties.SwaggerUiConfigProperties;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.context.ApplicationListener;
@@ -19,7 +19,7 @@ public class OpenApiGatewayConfig {
 
 	@Bean
 	public ApplicationListener<ApplicationReadyEvent> swaggerUiConfig(RouteDefinitionLocator locator,
-			SwaggerUiConfigParameters swaggerUiConfigParameters) {
+			SwaggerUiConfigProperties swaggerUiConfigProperties) {
 		return event -> locator.getRouteDefinitions()
 				.filter(definition -> definition.getUri() != null
 						&& "lb".equalsIgnoreCase(definition.getUri().getScheme()))
@@ -33,7 +33,7 @@ public class OpenApiGatewayConfig {
 					for (String serviceId : serviceIds) {
 						urls.add(new SwaggerUrl(serviceId, "/" + serviceId + API_DOCS_PATH, serviceId));
 					}
-					swaggerUiConfigParameters.setUrls(urls);
+					swaggerUiConfigProperties.setUrls(urls);
 				});
 	}
 }
