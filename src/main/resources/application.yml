@@ -17,10 +17,15 @@ eureka:
 ## Enable service discovery (with Eureka)
 ## lower-case-service-id is mandatory, otherwise is retrieved in upper case from Eureka
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: gateway    
   cloud:
     gateway:
+      enabled: true
+      route-definition-locator:
+        enabled: true
       routes:
         - id: catalogue
           uri: lb://catalogue
