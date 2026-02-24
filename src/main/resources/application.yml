@@ -52,6 +52,12 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     disable-swagger-default-url: true
+    urls:
+      - name: catalogue
+        url: /catalogue/v3/api-docs
+      - name: payments
+        url: /payments/v3/api-docs
+    urls-primary-name: catalogue
 
 ## We enable the Actuator API to be able to access <<host>>/actuator/gateway/routes
 ## We expose the routings that have been automatically detected (all)
