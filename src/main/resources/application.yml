@@ -21,6 +21,19 @@ spring:
     name: gateway    
   cloud:
     gateway:
+      routes:
+        - id: catalogue
+          uri: lb://catalogue
+          predicates:
+            - Path=/catalogue/**
+          filters:
+            - StripPrefix=1
+        - id: payments
+          uri: lb://payments
+          predicates:
+            - Path=/payments/**
+          filters:
+            - StripPrefix=1
       discovery:
         locator:
           enabled: true
