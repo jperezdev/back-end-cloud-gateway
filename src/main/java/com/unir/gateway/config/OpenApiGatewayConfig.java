@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springdoc.core.properties.AbstractSwaggerUiConfigProperties.SwaggerUrl;
 import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
@@ -29,14 +30,26 @@ public class OpenApiGatewayConfig {
 
 	@Bean
 	public ApplicationListener<ApplicationReadyEvent> swaggerUiConfig(RouteDefinitionLocator locator,
-			SwaggerUiConfigParameters swaggerUiConfigParameters) {
-		return event -> refreshSwaggerUrls(locator, swaggerUiConfigParameters);
+			ObjectProvider<SwaggerUiConfigParameters> swaggerUiConfigParametersProvider) {
+		return event -> {
+			SwaggerUiConfigParameters params = swaggerUiConfigParametersProvider.getIfAvailable();
+			if (params == null) {
+				return;
+			}
+			refreshSwaggerUrls(locator, params);
+		};
 	}
 
 	@Bean
 	public ApplicationListener<RefreshRoutesEvent> swaggerUiConfigOnRefresh(RouteDefinitionLocator locator,
-			SwaggerUiConfigParameters swaggerUiConfigParameters) {
-		return event -> refreshSwaggerUrls(locator, swaggerUiConfigParameters);
+			ObjectProvider<SwaggerUiConfigParameters> swaggerUiConfigParametersProvider) {
+		return event -> {
+			SwaggerUiConfigParameters params = swaggerUiConfigParametersProvider.getIfAvailable();
+			if (params == null) {
+				return;
+			}
+			refreshSwaggerUrls(locator, params);
+		};
 	}
 
 	private void refreshSwaggerUrls(RouteDefinitionLocator locator,
