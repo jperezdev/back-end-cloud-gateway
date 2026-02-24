@@ -10,7 +10,7 @@ import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.cloud.gateway.route.RouteDefinitionLocator;
+import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Bean;
@@ -29,7 +29,7 @@ public class OpenApiGatewayConfig {
 	private String apiDocsPath;
 
 	@Bean
-	public ApplicationListener<ApplicationReadyEvent> swaggerUiConfig(RouteDefinitionLocator locator,
+	public ApplicationListener<ApplicationReadyEvent> swaggerUiConfig(RouteLocator locator,
 			ObjectProvider<SwaggerUiConfigParameters> swaggerUiConfigParametersProvider) {
 		return event -> {
 			SwaggerUiConfigParameters params = swaggerUiConfigParametersProvider.getIfAvailable();
@@ -41,7 +41,7 @@ public class OpenApiGatewayConfig {
 	}
 
 	@Bean
-	public ApplicationListener<RefreshRoutesEvent> swaggerUiConfigOnRefresh(RouteDefinitionLocator locator,
+	public ApplicationListener<RefreshRoutesEvent> swaggerUiConfigOnRefresh(RouteLocator locator,
 			ObjectProvider<SwaggerUiConfigParameters> swaggerUiConfigParametersProvider) {
 		return event -> {
 			SwaggerUiConfigParameters params = swaggerUiConfigParametersProvider.getIfAvailable();
@@ -52,12 +52,12 @@ public class OpenApiGatewayConfig {
 		};
 	}
 
-	private void refreshSwaggerUrls(RouteDefinitionLocator locator,
+	private void refreshSwaggerUrls(RouteLocator locator,
 			SwaggerUiConfigParameters swaggerUiConfigParameters) {
-		locator.getRouteDefinitions()
-				.filter(definition -> definition.getUri() != null
-						&& "lb".equalsIgnoreCase(definition.getUri().getScheme()))
-				.map(definition -> definition.getUri().getHost())
+		locator.getRoutes()
+				.filter(route -> route.getUri() != null
+						&& "lb".equalsIgnoreCase(route.getUri().getScheme()))
+				.map(route -> route.getUri().getHost())
 				.filter(Objects::nonNull)
 				.map(serviceId -> serviceId.toLowerCase(Locale.ROOT))
 				.filter(serviceId -> !isSelfService(serviceId))
