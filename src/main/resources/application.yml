@@ -41,6 +41,13 @@ spring:
                           - DELETE
                           - PATCH
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    disable-swagger-default-url: true
+
 ## We enable the Actuator API to be able to access <<host>>/actuator/gateway/routes
 ## We expose the routings that have been automatically detected (all)
 ## Depending on the ROUTE_TABLES_ENABLED environment variable (true by default)
