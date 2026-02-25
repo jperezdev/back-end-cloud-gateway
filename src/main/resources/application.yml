@@ -39,7 +39,7 @@ spring:
         cors-configurations:
           '[/**]': ## For all routes
             allowedOriginPatterns:
-              - ${ALLOWED_ORIGINS:*}
+              - "*"
             allowedMethods:
               - GET
               - POST
@@ -48,8 +48,10 @@ spring:
               - PATCH
               - OPTIONS
               - HEAD
-            allowedHeaders: "*"
-            exposedHeaders: "*"
+            allowedHeaders:
+              - "*"
+            exposedHeaders:
+              - "*"
             allowCredentials: false
             maxAge: 3600
 springdoc:
