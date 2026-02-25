@@ -38,7 +38,7 @@ spring:
         add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]': ## For all routes
-            allowedOriginPatterns:
+            allowedOrigins:
               - "*"
             allowedMethods:
               - GET
