@@ -35,12 +35,23 @@ spring:
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
       globalcors:
+        add-to-simple-url-handler-mapping: true
         cors-configurations:
           '[/**]': ## For all routes
-            allowedOrigins: ${ALLOWED_ORIGINS:*} # With '*' we allow all origins. We can restrict by indicating domains or ip + port, e.g. http://localhost:3000 (where our front is, or a Vercel domain)
-            allowedHeaders: "*" ## All headers allowed
-            allowedMethods: "*"
-
+            allowedOriginPatterns:
+              - ${ALLOWED_ORIGINS:*}
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - PATCH
+              - OPTIONS
+              - HEAD
+            allowedHeaders: "*"
+            exposedHeaders: "*"
+            allowCredentials: false
+            maxAge: 3600
 springdoc:
   api-docs:
     path: /v3/api-docs
